@@ -34,7 +34,7 @@
   cursor: pointer;
   padding-left: 10px;
 }
-.m-node .collapse {
+.m-node .node-collapse {
   position: absolute;
   left: 0;
   cursor: pointer;

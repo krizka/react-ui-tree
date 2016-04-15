@@ -10,12 +10,14 @@ module.exports = React.createClass({
   propTypes: {
     tree: React.PropTypes.object.isRequired,
     paddingLeft: React.PropTypes.number,
-    renderNode: React.PropTypes.func.isRequired
+    renderNode: React.PropTypes.func.isRequired,
+    draggable: React.PropTypes.bool
   },
 
   getDefaultProps: function getDefaultProps() {
     return {
-      paddingLeft: 20
+      paddingLeft: 20,
+      draggable: true
     };
   },
   getInitialState: function getInitialState() {
@@ -81,7 +83,7 @@ module.exports = React.createClass({
         index: tree.getIndex(1),
         key: 1,
         paddingLeft: this.props.paddingLeft,
-        onDragStart: this.dragStart,
+        onDragStart: this.props.draggable && this.dragStart,
         onCollapse: this.toggleCollapse,
         dragging: dragging && dragging.id
       })
@@ -194,6 +196,11 @@ module.exports = React.createClass({
     });
   },
   dragEnd: function dragEnd() {
+    var tree = this.state.tree;
+    var index = tree.getIndex(this.state.dragging.id);
+    var parent = index && tree.get(index.parent);
+    var node = index && index.node;
+
     this.setState({
       dragging: {
         id: null,
@@ -204,13 +211,13 @@ module.exports = React.createClass({
       }
     });
 
-    this.change(this.state.tree);
+    this.change(tree, parent, node);
     window.removeEventListener('mousemove', this.drag);
     window.removeEventListener('mouseup', this.dragEnd);
   },
-  change: function change(tree) {
+  change: function change(tree, parent, node) {
     this._updated = true;
-    if (this.props.onChange) this.props.onChange(tree.obj);
+    if (this.props.onChange) this.props.onChange(tree.obj, parent, node);
   },
   toggleCollapse: function toggleCollapse(nodeId) {
     var tree = this.state.tree;
@@ -223,6 +230,6 @@ module.exports = React.createClass({
       tree: tree
     });
 
-    this.change(tree);
+    this.change(tree, null, node);
   }
 });

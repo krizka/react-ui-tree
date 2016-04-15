@@ -15,6 +15,7 @@ npm install react-ui-tree --save
   tree={this.state.tree}        // tree object
   onChange={this.handleChange}  // onChange(tree) tree object changed
   renderNode={this.renderNode}  // renderNode(node) return react element
+  draggable={true}              // is we can edit tree with dragging
 />
 
 // a sample tree object
